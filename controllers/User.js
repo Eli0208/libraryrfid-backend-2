@@ -200,6 +200,69 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  try {
+    const user = await userModel.getUserByEmail(email);
+
+    if (!user) {
+      return res.status(404).json({ message: "Email not found" });
+    }
+
+    // In a real implementation, you would generate a token and email it to the user.
+    // This token would be used to securely reset the password.
+    res.status(200).json({ message: "Email exists, proceed to reset" });
+  } catch (error) {
+    console.error("Error during forgot password:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  // Validate input
+  if (!email || !newPassword) {
+    return res
+      .status(400)
+      .json({ message: "Email and new password are required" });
+  }
+
+  try {
+    // Check if user exists
+    const user = await userModel.getUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the password in the database
+    const result = await userModel.updateUserPassword(
+      user.idNo,
+      hashedPassword
+    );
+
+    if (result.affectedRows === 0) {
+      return res
+        .status(500)
+        .json({ message: "Failed to reset password, please try again" });
+    }
+
+    // Respond with success message
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -208,4 +271,6 @@ module.exports = {
   getAllUsers,
   editUser,
   deleteUser,
+  forgotPassword,
+  resetPassword,
 };

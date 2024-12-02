@@ -7,6 +7,8 @@ const {
   getAllUsers,
   editUser,
   deleteUser,
+  forgotPassword,
+  resetPassword,
 } = require("../controllers/User"); // Import the controller
 const { verifyToken, verifyAdmin } = require("../middlewares/Auth");
 const router = express.Router();
@@ -19,5 +21,7 @@ router.post("/all-logs", verifyToken, verifyAdmin, getAllLogs);
 router.get("/users", verifyToken, verifyAdmin, getAllUsers);
 router.put("/users/:userId", verifyToken, verifyAdmin, editUser);
 router.delete("/users/:userId", verifyToken, verifyAdmin, deleteUser);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 
 module.exports = router;

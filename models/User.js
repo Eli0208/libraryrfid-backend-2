@@ -82,6 +82,12 @@ const deleteUserById = async (userId) => {
   return result;
 };
 
+const updateUserPassword = async (userId, hashedPassword) => {
+  const query = "UPDATE User SET password = ? WHERE idNo = ?";
+  const [result] = await db.execute(query, [hashedPassword, userId]);
+  return result; // Return the result for success or failure checks
+};
+
 module.exports = {
   createUser,
   getUserByEmail,
@@ -90,4 +96,5 @@ module.exports = {
   findAllUsers,
   updateUser,
   deleteUserById,
+  updateUserPassword,
 };
