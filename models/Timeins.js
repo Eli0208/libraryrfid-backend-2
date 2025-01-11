@@ -67,6 +67,7 @@ const getAllTimeIns = async () => {
       TimeIns.date, 
       TimeIns.time, 
       Student.name,
+      Student.rfidTag,
       Student.institute -- Include the institute column
     FROM TimeIns
     JOIN Student ON TimeIns.studentNumber = Student.studentNumber
